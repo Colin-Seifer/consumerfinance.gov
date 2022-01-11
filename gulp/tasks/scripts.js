@@ -203,8 +203,8 @@ gulp.task( 'scripts',
     'scripts:polyfill',
     'scripts:modern',
     'scripts:apps',
-    'scripts:external',
-    'scripts:ondemand'
+    'scripts:external'
+    // 'scripts:ondemand'
   )
 );
 
