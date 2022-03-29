@@ -68,6 +68,8 @@
         
             <li><a class="toctree-l4" href="#3-launch-site">3. Launch Site</a></li>
         
+            <li><a class="toctree-l4" href="#yarn-commands">yarn commands</a></li>
+        
             <li><a class="toctree-l4" href="#reinstalling-the-virtual-environment">Reinstalling the virtual environment</a></li>
         
         </ul>
@@ -224,10 +226,10 @@ if you only want to re-build the backend or front-end, respectively.</p>
 </div>
 <h5 id="setting-environments">Setting environments<a class="headerlink" href="#setting-environments" title="Permanent link">¶</a></h5>
 <p>The <code>NODE_ENV</code> environment variable can be set in your <code>.env</code> file to either
-<code>development</code> or <code>production</code>, which will affect how the build is made and what
-gulp tasks are available. To install dependencies of one environment
-or the other run <code>./frontend.sh</code> (dependencies and devDependencies)
-or <code>./frontend.sh production</code> (dependencies but not devDependencies).</p>
+<code>development</code> or <code>production</code>, which will affect how the build is made.
+To install dependencies of one environment or the other run <code>./frontend.sh</code>
+(dependencies and devDependencies) or <code>./frontend.sh production</code>
+(dependencies but not devDependencies).</p>
 <h3 id="2-run-elasticsearch-optional">2. Run Elasticsearch (optional)<a class="headerlink" href="#2-run-elasticsearch-optional" title="Permanent link">¶</a></h3>
 <p>Elasticsearch is needed for certain pieces of this project but is not a
 requirement for basic functionality.</p>
@@ -277,18 +279,20 @@ password will expire after 60 days).</p>
 <p>You'll need to ignore any browser certificate errors.</p>
 </div>
 <h4 id="available-gulp-tasks">Available Gulp Tasks<a class="headerlink" href="#available-gulp-tasks" title="Permanent link">¶</a></h4>
-<p>There are a number of important gulp tasks,
-particularly <code>build</code> and <code>test</code>,
-which will build the project and test it, respectively.
-Tasks are invoked via an <code>yarn run</code> command so that the local gulp-cli can be used.
-Using the <code>yarn run gulp -- --tasks</code> command you can view all available tasks.
+<p>There are a number of important gulp tasks, particularly <code>build</code>,
+which will build the project.
+Tasks are invoked via a <code>yarn</code> command so that the local gulp-cli can be used.
+Using the <code>yarn gulp -- --tasks</code> command you can view all available tasks.
 The important ones are listed below:</p>
-<pre class="highlight"><code>yarn run gulp build           # Concatenate, optimize, and copy source files to the production /dist/ directory.
-yarn run gulp clean           # Remove the contents of the production /dist/ directory.
-yarn run gulp lint            # Lint the scripts and build files.
-yarn run gulp docs            # Generate JSDocs from the scripts.
-yarn run gulp test            # Run linting, unit, and functional tests (see below).
-yarn run gulp test:unit       # Run only unit tests on source code.</code></pre>
+<pre class="highlight"><code>yarn gulp build           # Concatenate, optimize, and copy source files to the production /dist/ directory.
+yarn gulp clean           # Remove the contents of the production /dist/ directory.
+yarn gulp docs            # Generate JSDocs from the scripts.</code></pre>
+
+<h3 id="yarn-commands">yarn commands<a class="headerlink" href="#yarn-commands" title="Permanent link">¶</a></h3>
+<p>Along with gulp tasks, the following yarn tasks are available:</p>
+<pre class="highlight"><code>yarn lint                # Run frontend linting
+yarn jest                # Run frontend tests
+yarn test                # Run both</code></pre>
 
 <h3 id="reinstalling-the-virtual-environment">Reinstalling the virtual environment<a class="headerlink" href="#reinstalling-the-virtual-environment" title="Permanent link">¶</a></h3>
 <p>To remove an existing virtual environment for
