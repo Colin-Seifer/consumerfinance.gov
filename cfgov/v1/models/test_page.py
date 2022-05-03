@@ -55,6 +55,7 @@ from v1.util.util import get_secondary_nav_items
 from youth_employment.blocks import YESChecklist
 
 
+# choices required for enforcement actions
 enforcement_statuses = [
     ("expired-terminated-dismissed", "Expired/Terminated/Dismissed"),
     ("pending-litigation", "Pending Litigation"),
@@ -156,6 +157,7 @@ def decimal_field():
     return models.DecimalField(decimal_places=2, max_digits=13, default=0)
 
 
+# Enforcement actions
 class TestEnforcementActionDisposition(models.Model):
     final_disposition = models.CharField(max_length=150, blank=True)
     final_disposition_type = models.CharField(
@@ -243,6 +245,14 @@ class TestEnforcementActionStatute(models.Model):
 
 
 class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
+    # TestPage contains every element present on the live website
+    # Wagtail page layout is separated into tabs, panels, and fields
+    # Tabs sort panels into similar categories
+    # Panels contain one or more fields that can be added to appear
+    # on the live page
+    # Fields contain some type of data
+
+    # header panel containing many fields
     header = StreamField(
         [
             ("hero", molecules.Hero()),
@@ -257,6 +267,7 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         blank=True,
     )
 
+    # Misc panels that should be kept separate from header and content
     preview_title = models.CharField(max_length=255, null=True, blank=True)
     preview_subheading = models.CharField(
         max_length=255, null=True, blank=True
@@ -422,6 +433,7 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
     agenda_items = StreamField([("item", AgendaItemBlock())], blank=True)
     # End of event page content
 
+    # This panel is where most of the main visual page content will exist.
     content = StreamField(
         [
             ("full_width_text", organisms.FullWidthText()),
@@ -466,6 +478,7 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         blank=True,
     )
 
+    # Definition for a sidebar on the page.
     sidebar_breakout = StreamField(
         [
             ("slug", blocks.CharBlock(icon="title")),
@@ -511,6 +524,7 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         blank=True,
     )
 
+    # specification for secondary navigation
     secondary_nav_exclude_sibling_pages = models.BooleanField(default=False)
 
     share_and_print = models.BooleanField(
@@ -554,6 +568,7 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         ),
     ]
 
+    # Sidefoot tab
     sidefoot_panels = CFGOVPage.sidefoot_panels + [
         FieldPanel("secondary_nav_exclude_sibling_pages"),
         StreamFieldPanel("sidebar_breakout"),
@@ -598,6 +613,7 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         MultiFieldPanel(CFGOVPage.promote_panels, "Page configuration"),
     ]
 
+    # Medatada for the test page
     metadata_panels = [
         FieldPanel("public_enforcement_action"),
         FieldPanel("initial_filing_date"),
@@ -613,6 +629,7 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         InlinePanel("enforcement_dispositions", label="Final Disposition"),
     ]
 
+    # Settings tab
     settings_panels = [
         MultiFieldPanel(CFGOVPage.promote_panels, "Settings"),
         InlinePanel("categories", label="Categories", max_num=2),
@@ -658,8 +675,10 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         ]
     )
 
+    # Where the page template lives
     template = "test-page/index.html"
 
+    # Fields available to Wagtail's search functionality
     search_fields = CFGOVPage.search_fields + [
         index.SearchField("body"),
         index.SearchField("archive_body"),
@@ -672,11 +691,13 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         index.SearchField("header"),
     ]
 
+    # These types of pages are the only ones that can be filterable
     filterable_categories = ("Blog", "Newsroom", "Research Report")
     filterable_per_page_limit = 100
 
     @property
     def event_state(self):
+        # Determines the state of an event page
         if self.end_dt and self.end_dt < self._cached_now:
             return "past"
 
