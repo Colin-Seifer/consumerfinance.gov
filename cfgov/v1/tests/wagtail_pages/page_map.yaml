@@ -1,0 +1,170 @@
+---
+  definitions:
+    # stubs are test data to put into fields
+    - stubs:
+      stub_boolean_true: True
+      stub_boolean_false: False
+      stub_integer: 5
+      stub_float: 0.33333
+      stub_string: "Test text data"
+      stub_relative_path: "/"
+      stub_aria_label: "Test aria label"
+      stub_icon: "help-round"
+      stub_heading_level: "h2"
+      stub_date: "01-01-2099"
+      stub_street_address: "1700 G Street NW"
+      stub_city: "Washington"
+      stub_state: "DC"
+      stub_zipcode: "20552"
+      stub_settled: "Settled"
+      stub_image_type: "image"
+      stub_image: "/"
+      stub_video: "/"
+      stub_document: "/"
+      stub_table: "/"
+      stub_flickr_url: "/"
+      stub_audio: "/"
+      stub_chart: "/"
+      stub_map: "/"
+
+    # base components are composed of only stubs
+    - base_components:
+      - links_component: &links
+        text: "{{stub_string}}"
+        aria_label: "{{stub_aria_label}}"
+        url: "{{stub_relative_path}}"
+      - hero_component: &hero
+        is_overlay: "{{stub_boolean_true}}"
+        is_bleeding: "{{stub_boolean_true}}"
+      - item_introduction_component: &item_introduction
+        show_category: "{{stub_boolean_true}}"
+        heading: "{{stub_string}}"
+        paragraph: "{{stub_paragraph}}"
+        date: "{{stub_date}}"
+        has_social: "{{stub_boolean_true}}"
+      - heading_component: &heading
+        level: "{{stub_heading_level}}"
+        icon: "{{stub_icon}}"
+      - sharing_component: &sharing
+        shareable: "{{stub_boolean_true}}"
+        share_blurb: "{{stub_string}}"
+      - date_field_component: &date_field
+        date_string: "{{stub_string}}"
+        date: "{{stub_date}}"
+
+    # compound components are made up of a combination of stubs and/or aliases
+    - compound_components:
+      - text_introduction_component: &text_introduction
+        eyebrow: "{{stub_string}}"
+        heading: "{{stub_string}}"
+        intro: "{{stub_string}}"
+        body: "{{stub_string}}"
+        - links: *links
+        has_rule: "{{stub_boolean_true}}"
+      - header_component: &header
+        - hero: *hero
+        article_subheader: "{{stub_string}}"
+        - text_introduction: *text_introduction
+        - item_introduction: *item_introduction
+        - featured_content: *featured_content
+        - notification: *notification
+        - jumbo_hero: *jumbo_hero
+        - features: *info_unit
+      - agenda_items_component: &agenda_items
+        - start_time: *time_block
+        - end_time: *time_block
+        description: "{{stub_string}}"
+        location: "{{stub_string}}"
+        - speakers: *list_block
+      - content_component: &content
+        - full_width_text: *full_width_text
+        - info_units: *info_unit_group
+        - info_unit_group: *info_unit_group
+        - text_introduction: *text_introduction
+        - simple_chart: *simple_chart
+        - expandable: *expandable
+        - expandable_group: *expandable_group
+        - contact: *main_contact_info
+        - contact_expandable_group: *contact_expandable_group
+        - featured_content: *featured_content
+        - notification: *notification
+        - well: *well
+        - call_to_action: *call_to_action
+        - image: "{{stub_image}}"
+        - video_player: *video_player
+        - snippet_list: *resource_list
+        - post_preview_snapshot: *post_preview_snapshot
+        - table_block: *atomic_table_block
+        - email_signup: *email_signup
+        - audio_player: *audio_player
+        - filter_controls: *filter_list
+        - feedback: *feedback
+        - faq_schema: *faq
+        - how_to_schema: *how_to
+        - raw_html_block: *raw_html_block
+        - conference_registration_form: *conference_registration_form
+        - chart_block: *chart_block
+        - mortgage_chart_block: *mortgage_chart_block
+        - mortgage_map_block: *mortgage_map_block
+        - mortgage_downloads_block: *mortgage_data_downloads
+        - data_snapshot: *data_snapshot
+        - job_listing_table: *job_listing_table
+        - yes_checklist: *yes_checklist
+        - erap_tool: *raft_tool_block
+        - raf_tool: *raft_block
+      - sidebar_component: &sidebar
+        - slug: *char_block
+        - heading: *char_block
+        - paragraph: "{{stub_string}}"
+        - breakout_image: *breakout_image
+        - related_posts: *related_posts
+        - job_listing_list: *job_listing_list
+
+    # page is comprised of the base components of the main page
+    - page:
+      - header: *header
+      - preview_title: *char_field
+      - preview_subheading: *char_field
+      - preview_description: "{{stub_string}}"
+      - secondary_link_url: *char_field_url
+      - secondary_link_text: *char_field
+      - preview_image: "{{stub_image}}"
+      - date_published: *date_field
+      - date_filed: *date_field
+      - comments_close_by: *date_field
+      - public_enforcement_action: *char_field
+      - initial_filing_date: *date_field
+      - settled_or_contested_at_filing: *char_field
+      - court: *char_field
+      - body: "{{stub_string}}"
+      - archive_body: "{{stub_string}}"
+      - live_body: "{{stub_string}}"
+      - future_body: "{{stub_string}}"
+      - persistent_body: *persistent_body
+      - start_dt: *date_time_field
+      - end_dt: *date_time_field
+      - future_body: "{{stub_string}}"
+      - archive_image: "{{stub_image}}"
+      - video_transcript: "{{stub_video}}"
+      - speech_transcript: "{{stub_document}}"
+      - flickr_url: "{{stub_flickr_url}}"
+      - archive_video_id: "{{stub_video}}"
+      live_stream_availability: "{{stub_boolean_false}}"
+      - live_video_id: "{{stub_video}}"
+      - live_stream_date: *date_field
+      venue_coords: "{{stub_string}}"
+      venue_name: "{{stub_string}}"
+      venue_street: "{{stub_street_address}}"
+      venue_suite: "{{stub_string}}"
+      venue_city: "{{stub_city}}"
+      venue_state: "{{stub_state}}"
+      venue_zipcode: "{{stub_zipcode}}"
+      venue_image_type: "{{stub_image_type}}"
+      - venue_image: "{{stub_image}}"
+      post_event_image_type: "{{stub_image_type}}"
+      - post_event_image: "{{stub_image}}"
+      - agenda_items: *agenda_items
+      - content: *content
+      - sidebar_breakout: *sidebar
+      secondary_nav_exclude_sibling_pages: "{{stub_boolean_true}}"
+      share_and_print: "{{stub_boolean_true}}"
