@@ -6,54 +6,131 @@
       stub_boolean_false: False
       stub_integer: 5
       stub_float: 0.33333
+      stub_related_posts_limit: "3"
       stub_string: "Test text data"
+      stub_slug: "test-page-slug"
       stub_relative_path: "/"
+      stub_page: "CFGov"
+      stub_market_key: "AUT"
+      stub_originations: "1.2 million"
+      stub_value_originations: "$3.4 billion"
+      stub_year_over_year_change: "5.6% increase"
+      stub_date_present: "2022-01-01"
       stub_aria_label: "Test aria label"
       stub_icon: "help-round"
       stub_heading_level: "h2"
-      stub_date: "01-01-2099"
+      stub_date: "2099-01-01"
+      stub_datetime: "2099-01-01 11:11:11.111111"
       stub_street_address: "1700 G Street NW"
       stub_city: "Washington"
       stub_state: "DC"
       stub_zipcode: "20552"
       stub_settled: "Settled"
       stub_image_type: "image"
-      stub_image: "/"
+      stub_tag_filtering: "any"
+      stub_image: "http://placekitten.com/165/165"
+      stub_govdelivery_code: "TEST-GOVDELIVERY-CODE"
+      stub_govdelivery_id: "12345"
       stub_video: "/"
       stub_document: "/"
       stub_table: "/"
       stub_flickr_url: "/"
       stub_audio: "/"
-      stub_chart: "/"
+      stub_chart_type: "bar"
+      stub_color_scheme: "green"
+      stub_data_source: "consumer-credit-trends/auto-loans/num_data_AUT.csv"
       stub_map: "/"
 
     # base components are composed of only stubs
     - base_components:
+
       - links_component: &links
         text: "{{stub_string}}"
         aria_label: "{{stub_aria_label}}"
         url: "{{stub_relative_path}}"
+
       - hero_component: &hero
         is_overlay: "{{stub_boolean_true}}"
         is_bleeding: "{{stub_boolean_true}}"
+
       - item_introduction_component: &item_introduction
         show_category: "{{stub_boolean_true}}"
         heading: "{{stub_string}}"
         paragraph: "{{stub_paragraph}}"
         date: "{{stub_date}}"
         has_social: "{{stub_boolean_true}}"
+
       - heading_component: &heading
         level: "{{stub_heading_level}}"
         icon: "{{stub_icon}}"
+
       - sharing_component: &sharing
         shareable: "{{stub_boolean_true}}"
         share_blurb: "{{stub_string}}"
+
+      - date_time_field_component: &date_time_field
+        date_string: "{{stub_string}}"
+        datetime: "{{stub_datetime}}"
+
       - date_field_component: &date_field
         date_string: "{{stub_string}}"
         date: "{{stub_date}}"
 
+      - job_listing_list_component: &job_listing_list
+        icon: "{{stub_icon}}"
+        title: "{{stub_page}}"
+
+      - related_posts_component: &related_posts
+        limit: "{{stub_related_posts_limit}}"
+        show_heading: "{{stub_boolean_true}}"
+        header_title: "{{stub_string}}"
+        relate_posts: "{{stub_boolean_true}}"
+        relate_newsroom: "{{stub_boolean_true}}"
+        relate_events: "{{stub_boolean_true}}"
+        tag_filtering: "{{stub_tag_filtering}}"
+
+      - image_component: &image
+        title: "{{stub_string}}"
+        file: "{{stub_image}}"
+
+      - raft_block_component: &raft_block
+        county_threshold: "{{stub_integer}}"
+
+      - yes_checklist_item_component: &yes_checklist_item
+        item: "{{stub_string}}"
+        details: "{{stub_string}}"
+
+      - mortgage_chart_block_component: &mortgage_chart_block
+        content_block: "{{stub_string}}"
+        title: "{{stub_string}}"
+        description: "{{stub_string}}"
+        note: "{{stub_string}}"
+        has_top_rule_line: "{{stub_boolean_true}}"
+
+      - chart_block_component: &chart_block
+        title: "{{stub_string}}"
+        chart_type: "{{stub_chart_type}}"
+        color_scheme: "{{stub_color_scheme}}"
+        data_source: "{{stub_data_source}}"
+        date_published: "{{stub_date_present}}"
+        description: "{{stub_string}}"
+        has_top_rule_line: "{{stub_boolean_true}}"
+        last_updated_projected_data: "{{stub_date_present}}"
+        note: "{{stub_string}}"
+        y_axis_label: "{{stub_string}}"
+
+      conference_registration_form_component: &conference_registration_form
+        govdelivery_code: "{{stub_govdelivery_code}}"
+        govdelivery_question_id: "{{stub_govdelivery_id}}"
+        govdelivery_answer_id: "{{stub_govdelivery_id}}"
+        capacity: "{{stub_integer}}"
+        success_message: "{{stub_string}}"
+        at_capacity_message: "{{stub_string}}"
+        failure_message: "{{stub_string}}"
+
     # compound components are made up of a combination of stubs and/or aliases
     - compound_components:
+
       - text_introduction_component: &text_introduction
         eyebrow: "{{stub_string}}"
         heading: "{{stub_string}}"
@@ -61,6 +138,7 @@
         body: "{{stub_string}}"
         - links: *links
         has_rule: "{{stub_boolean_true}}"
+
       - header_component: &header
         - hero: *hero
         article_subheader: "{{stub_string}}"
@@ -70,12 +148,52 @@
         - notification: *notification
         - jumbo_hero: *jumbo_hero
         - features: *info_unit
+
+      - persistent_body_component: &persistent_body
+        content: "{{stub_string}}"
+        - content_with_anchor: *content_with_anchor
+        - heading: *heading_block
+        - image: *image
+        - table_block: "{{stub_table}}"
+        - reusable_text: *reusable_text
+
+      - mortgage_data_downloads_component: &mortgage_data_downloads
+        show_archives: "{{stub_boolean_true}}"
+
+      - data_snapshot_component: &data_snapshot
+        market_key: "{{stub_market_key}}"
+        num_originations: "{{stub_originations}}"
+        value_originations: "{{stub_value_originations}}"
+        year_over_year_change: "{{stub_year_over_year_change}}"
+        last_updated_projected_data: "{{stub_date_present}}"
+        num_originations_text: "{{stub_string}}"
+        value_originations_text: "{{stub_string}}"
+        year_over_year_change_text: "{{stub_string}}"
+        inquiry_month: "{{stub_date_present}}"
+        inquiry_year_over_year_change: "{{stub_year_over_year_change}}"
+        inquiry_year_over_year_change_text: "{{stub_string}}"
+        tightness_month: "{{stub_date_present}}"
+        tightness_year_over_year_change: "{{stub_year_over_year_change}}"
+        tightness_year_over_year_change_text: "{{stub_string}}"
+        - image: *image
+
+      - yes_checklist_component: &yes_checklist
+        checklist: *yes_checklist_item
+
+      - breakout_image_component: &breakout_image
+        - image: *image
+        is_round: "{{stub_boolean_true}}"
+        icon: "{{stub_icon}}"
+        heading: "{{stub_string}}"
+        body: "{{stub_string}}"
+
       - agenda_items_component: &agenda_items
         - start_time: *time_block
         - end_time: *time_block
         description: "{{stub_string}}"
         location: "{{stub_string}}"
         - speakers: *list_block
+
       - content_component: &content
         - full_width_text: *full_width_text
         - info_units: *info_unit_group
@@ -90,7 +208,7 @@
         - notification: *notification
         - well: *well
         - call_to_action: *call_to_action
-        - image: "{{stub_image}}"
+        - image: *image
         - video_player: *video_player
         - snippet_list: *resource_list
         - post_preview_snapshot: *post_preview_snapshot
@@ -101,20 +219,18 @@
         - feedback: *feedback
         - faq_schema: *faq
         - how_to_schema: *how_to
-        - raw_html_block: *raw_html_block
+        - raw_html_block: "{{stub_string}}"
         - conference_registration_form: *conference_registration_form
         - chart_block: *chart_block
         - mortgage_chart_block: *mortgage_chart_block
-        - mortgage_map_block: *mortgage_map_block
         - mortgage_downloads_block: *mortgage_data_downloads
         - data_snapshot: *data_snapshot
-        - job_listing_table: *job_listing_table
         - yes_checklist: *yes_checklist
-        - erap_tool: *raft_tool_block
         - raf_tool: *raft_block
+
       - sidebar_component: &sidebar
-        - slug: *char_block
-        - heading: *char_block
+        - slug: "{{stub_slug}}"
+        - heading: "{{stub_string}}"
         - paragraph: "{{stub_string}}"
         - breakout_image: *breakout_image
         - related_posts: *related_posts
@@ -123,19 +239,19 @@
     # page is comprised of the base components of the main page
     - page:
       - header: *header
-      - preview_title: *char_field
-      - preview_subheading: *char_field
+      - preview_title: "{{stub_string}}"
+      - preview_subheading: "{{stub_string}}"
       - preview_description: "{{stub_string}}"
-      - secondary_link_url: *char_field_url
-      - secondary_link_text: *char_field
-      - preview_image: "{{stub_image}}"
+      - secondary_link_url: "{{stub_relative_path}}"
+      - secondary_link_text: "{{stub_string}}"
+      - preview_image: *image
       - date_published: *date_field
       - date_filed: *date_field
       - comments_close_by: *date_field
-      - public_enforcement_action: *char_field
+      - public_enforcement_action: "{{stub_string}}"
       - initial_filing_date: *date_field
-      - settled_or_contested_at_filing: *char_field
-      - court: *char_field
+      - settled_or_contested_at_filing: "{{stub_string}}"
+      - court: "{{stub_string}}"
       - body: "{{stub_string}}"
       - archive_body: "{{stub_string}}"
       - live_body: "{{stub_string}}"
@@ -144,14 +260,14 @@
       - start_dt: *date_time_field
       - end_dt: *date_time_field
       - future_body: "{{stub_string}}"
-      - archive_image: "{{stub_image}}"
+      - archive_image: *image
       - video_transcript: "{{stub_video}}"
       - speech_transcript: "{{stub_document}}"
       - flickr_url: "{{stub_flickr_url}}"
       - archive_video_id: "{{stub_video}}"
       live_stream_availability: "{{stub_boolean_false}}"
       - live_video_id: "{{stub_video}}"
-      - live_stream_date: *date_field
+      - live_stream_date: *date_time_field
       venue_coords: "{{stub_string}}"
       venue_name: "{{stub_string}}"
       venue_street: "{{stub_street_address}}"
@@ -160,9 +276,9 @@
       venue_state: "{{stub_state}}"
       venue_zipcode: "{{stub_zipcode}}"
       venue_image_type: "{{stub_image_type}}"
-      - venue_image: "{{stub_image}}"
+      - venue_image: *image
       post_event_image_type: "{{stub_image_type}}"
-      - post_event_image: "{{stub_image}}"
+      - post_event_image: *image
       - agenda_items: *agenda_items
       - content: *content
       - sidebar_breakout: *sidebar
