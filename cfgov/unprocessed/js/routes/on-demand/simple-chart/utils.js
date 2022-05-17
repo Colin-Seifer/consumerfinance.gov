@@ -107,9 +107,88 @@ function makeFormatter( yAxisLabel ) {
   };
 }
 
+/**
+ * Pulls specified keys from the resolved data object
+ * @param {array} rawData Array of data from JSON, CSV or directly entered
+ * @param {string} series The keys for data to render into the chart
+ * @param {string} x_axis_data Key or array of categories
+ * @returns {array} Series data
+ */
+function extractSeries( rawData, { series, xAxisSource, chartType } ) {
+  if ( series ) {
+    if ( series.match( /^\[/ ) ) {
+      series = JSON.parse( series );
+    } else {
+      series = [ series ];
+    }
+
+    if ( chartType === 'datetime' ) {
+      if ( !xAxisSource ) xAxisSource = 'x';
+    }
+
+    const seriesData = [];
+
+    // array of {name: str, data: arr (maybe of obj)}
+    series.forEach( currSeries => {
+      let name = currSeries;
+      let key = currSeries;
+      if ( typeof currSeries === 'object' ) {
+        name = name.label;
+        key = key.key;
+      }
+      const currArr = [];
+      const currObj = {
+        name,
+        data: currArr
+      };
+
+      rawData.forEach( obj => {
+        let d = Number( obj[key] );
+        if ( chartType === 'datetime' ) {
+          d = {
+            x:  Number( new Date( obj[xAxisSource] ) ),
+            y: d
+          };
+        }
+        currArr.push( d );
+      } );
+      seriesData.push( currObj );
+    } );
+    return seriesData;
+  }
+  return null;
+}
+
+// Converts to human readable date from Epoch format
+function getProjectedDate( date ) {
+  let humanFriendly = null;
+  let timestamp = null;
+  let month = null;
+  let year = null;
+  const months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+
+  if ( typeof date === 'number' && date.toString().length >= 12 && date.toString().length <= 13 ) {
+
+    month = new Date( date ).getUTCMonth();
+    month = months[month];
+    year = new Date( date ).getUTCFullYear();
+
+    humanFriendly = month + ' ' + year;
+    timestamp = date;
+  }
+
+  return {
+    humanFriendly: humanFriendly,
+    timestamp: timestamp
+  };
+}
+
+
 export {
   alignMargin,
   formatSeries,
   makeFormatter,
-  overrideStyles
+  overrideStyles,
+  extractSeries,
+  getProjectedDate
 };

@@ -2,24 +2,22 @@
 /* eslint max-statements: ["error", 30] */
 /* eslint max-lines-per-function: ["error", 75] */
 /* eslint consistent-return: [0] */
-// Polyfill Promise for IE11
-import 'core-js/features/promise';
-
 import Highcharts from 'highcharts/highstock';
 import Papa from 'papaparse';
 import accessibility from 'highcharts/modules/accessibility';
-import fetch from 'cross-fetch';
 import cloneDeep from 'lodash.clonedeep';
 import chartHooks from './chart-hooks.js';
 import defaultBar from './bar-styles.js';
 import defaultDatetime from './datetime-styles.js';
 import defaultLine from './line-styles.js';
 import tilemapChart from './tilemap-chart.js';
-import { alignMargin, formatSeries, makeFormatter, overrideStyles } from './utils.js';
-import { initFilters, isDateFilter } from './select-filters.js';
+import { alignMargin, extractSeries, formatSeries, makeFormatter, overrideStyles } from './utils.js';
+import { initFilters } from './data-filters.js';
+import { getProjectedDate } from './utils';
 
 accessibility( Highcharts );
 
+const msInDay = 24 * 60 * 60 * 1000;
 const promiseCache = {};
 
 /**
@@ -73,58 +71,6 @@ function getDefaultChartObject( type ) {
 }
 
 /**
- * Pulls specified keys from the resolved data object
- * @param {array} rawData Array of data from JSON, CSV or directly entered
- * @param {string} series The keys for data to render into the chart
- * @param {string} x_axis_data Key or array of categories
- * @returns {array} Series data
- */
-function extractSeries( rawData, { series, xAxisSource, chartType } ) {
-  if ( series ) {
-    if ( series.match( /^\[/ ) ) {
-      series = JSON.parse( series );
-    } else {
-      series = [ series ];
-    }
-
-    if ( chartType === 'datetime' ) {
-      if ( !xAxisSource ) xAxisSource = 'x';
-    }
-
-    const seriesData = [];
-
-    // array of {name: str, data: arr (maybe of obj)}
-    series.forEach( currSeries => {
-      let name = currSeries;
-      let key = currSeries;
-      if ( typeof currSeries === 'object' ) {
-        name = name.label;
-        key = key.key;
-      }
-      const currArr = [];
-      const currObj = {
-        name,
-        data: currArr
-      };
-
-      rawData.forEach( obj => {
-        let d = Number( obj[key] );
-        if ( chartType === 'datetime' ) {
-          d = {
-            x:  Number( new Date( obj[xAxisSource] ) ),
-            y: d
-          };
-        }
-        currArr.push( d );
-      } );
-      seriesData.push( currObj );
-    } );
-    return seriesData;
-  }
-  return null;
-}
-
-/**
  * Overrides default chart options using provided Wagtail configurations
  * @param {object} data The data to provide to the chart
  * @param {object} dataAttributes Data attributes passed to the chart target node
@@ -132,8 +78,8 @@ function extractSeries( rawData, { series, xAxisSource, chartType } ) {
  */
 function makeChartOptions( data, dataAttributes ) {
   const { chartType, styleOverrides, description, xAxisSource, xAxisLabel,
-    yAxisLabel, filters } = dataAttributes;
-  const defaultObj = cloneDeep( getDefaultChartObject( chartType ) );
+    yAxisLabel, projectedMonths, defaultSeries } = dataAttributes;
+  let defaultObj = cloneDeep( getDefaultChartObject( chartType ) );
 
   if ( styleOverrides ) {
     overrideStyles( styleOverrides, defaultObj, data );
@@ -162,11 +108,6 @@ function makeChartOptions( data, dataAttributes ) {
     defaultObj.tooltip.formatter = makeFormatter( yAxisLabel );
   }
 
-  if ( isDateFilter( filters, xAxisSource ) ) {
-    defaultObj.navigator.enabled = false;
-    defaultObj.xAxis.min = defaultObj.series[0].data[0].x;
-  }
-
   if ( defaultObj.series.length === 1 ) {
     defaultObj.plotOptions.series = {
       ...defaultObj.plotOptions.series,
@@ -176,11 +117,79 @@ function makeChartOptions( data, dataAttributes ) {
         }
       }
     };
+  } else {
+    defaultObj.legend.title = {
+      text: '(Click to show/hide data)',
+      style: {
+        fontStyle: 'italic',
+        fontWeight: 'normal',
+        fontSize: '14px',
+        color: '#666'
+      }
+    };
+  }
+
+  if ( projectedMonths > 0 ) {
+    defaultObj = addProjectedMonths( defaultObj, projectedMonths );
+    defaultObj.legend.y = -10;
+    defaultObj.chart.marginTop = 180;
+
+  }
+
+  if ( defaultSeries === 'False' ) {
+    defaultObj.series = defaultObj.series.map( ( singluarSeries, i ) => {
+      // Skip the first series
+      if ( i > 0 ) {
+        singluarSeries.visible = false;
+      }
+      return singluarSeries;
+    } );
   }
 
   alignMargin( defaultObj, chartType );
 
   return defaultObj;
+}
+
+/**
+ * Adds projected months to config object for Highcharts
+ * @param {object} chartObject The config object for Highcharts
+ * @param {integer} numMonths The number of months input into wagtail field
+ * @returns {object} The config object with projected months
+ */
+function addProjectedMonths( chartObject, numMonths ) {
+
+  // Convert the number of projected months into a timestamp
+  const lastChartDate = chartObject.series[0].data.at( -1 ).x;
+
+  // Convert lastChartDate from months to milliseconds for Epoch format
+  const convertedProjectedDate = lastChartDate - ( numMonths * 30 * msInDay );
+  const projectedDate = getProjectedDate( convertedProjectedDate );
+
+  /* Add a vertical line and some explanatory text at the starting
+     point of the projected data */
+  chartObject.xAxis.plotLines = [ {
+    value: projectedDate.timestamp,
+    label: {
+      text: `Values after ${ projectedDate.humanFriendly } are projected`,
+      rotation: 0,
+      x: -260,
+      y: -10
+    }
+  } ];
+
+  /* Add a zone to each series with a dotted line starting
+     at the projected data starting point */
+  chartObject.series = chartObject.series.map( singluarSeries => {
+    singluarSeries.zoneAxis = 'x';
+    singluarSeries.zones = [ {
+      value: projectedDate.timestamp
+    }, {
+      dashStyle: 'dot'
+    } ];
+    return singluarSeries;
+  } );
+  return chartObject;
 }
 
 /**
@@ -230,10 +239,11 @@ function buildChart( chartNode ) {
   const { source, transform, chartType } = dataAttributes;
 
   resolveData( source.trim() ).then( raw => {
-    const series = extractSeries( raw, dataAttributes );
     const transformed = transform && chartHooks[transform] ?
       chartHooks[transform]( raw ) :
       null;
+
+    const series = extractSeries( transformed || raw, dataAttributes );
 
     const data = {
       raw,
@@ -252,8 +262,7 @@ function buildChart( chartNode ) {
       );
 
       initFilters(
-        dataAttributes, chartNode, chart, data,
-        transform && chartHooks[transform]
+        dataAttributes, chartNode, chart, data
       );
     }
 

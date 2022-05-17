@@ -37,7 +37,11 @@ from v1.template_debug import (
     video_player_test_cases,
 )
 from v1.util import util
-from v1.views.reports import DocumentsReportView, PageMetadataReportView
+from v1.views.reports import (
+    DocumentsReportView,
+    ImagesReportView,
+    PageMetadataReportView,
+)
 
 
 try:
@@ -126,6 +130,7 @@ def editor_css():
         "css/heading-block.css",
         "css/model-admin.css",
         "css/table-block.css",
+        "css/simple-chart-admin.css",
     ]
 
     css_includes = format_html_join(
@@ -286,6 +291,27 @@ def register_documents_report_url():
             r"^reports/documents/$",
             DocumentsReportView.as_view(),
             name="documents_report",
+        ),
+    ]
+
+
+@hooks.register("register_reports_menu_item")
+def register_images_report_menu_item():
+    return MenuItem(
+        "Images",
+        reverse("images_report"),
+        classnames="icon icon-" + ImagesReportView.header_icon,
+        order=700,
+    )
+
+
+@hooks.register("register_admin_urls")
+def register_images_report_url():
+    return [
+        re_path(
+            r"^reports/images/$",
+            ImagesReportView.as_view(),
+            name="images_report",
         ),
     ]
 
