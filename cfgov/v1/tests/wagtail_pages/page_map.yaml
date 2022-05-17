@@ -128,6 +128,29 @@
         at_capacity_message: "{{stub_string}}"
         failure_message: "{{stub_string}}"
 
+      tip_component: &tip
+        content: "{{stub_string}}"
+
+      feedback_component: &feedback
+        was_it_helpful_text: "{{stub_string}}"
+        intro_text: "{{stub_string}}"
+        question_text: "{{stub_string}}"
+        radio_intro: "{{stub_string}}"
+        contact_advisory: "{{stub_string}}"
+
+      - filter_list_component: &filter_list
+        no_posts_message: "{{stub_string}}"
+        no_posts_explanation: "{{stub_string}}"
+        post_date_description: "{{stub_string}}"
+        title: "{{stub_boolean_true}}"
+        statuses: "{{stub_boolean_true}}"
+        products: "{{stub_boolean_true}}"
+        language: "{{stub_boolean_true}}"
+        date_range: "{{stub_boolean_true}}"
+        output_5050: "{{stub_boolean_true}}"
+        link_image_and_heading: "{{stub_boolean_true}}"
+        filter_children: "{{stub_boolean_true}}"
+
     # compound components are made up of a combination of stubs and/or aliases
     - compound_components:
 
@@ -138,6 +161,29 @@
         body: "{{stub_string}}"
         - links: *links
         has_rule: "{{stub_boolean_true}}"
+
+      - schema_content_component: &schema_content
+        text: "{{stub_string}}"
+        - table_block: *atomic_table_block
+        - tip: *tip
+        - video_player: *video_player
+
+      - steps_component: &steps
+        title: "{{stub_string}}"
+        - step_content: *schema_content
+
+      - how_to_component: &how_to
+        title: "{{stub_string}}"
+        description: "{{stub_string}}"
+        - steps: *steps
+
+      - questions_component: &questions
+        question: "{{stub_string}}"
+        - answer_content: *schema_content
+
+      - faq_component: &faq
+        description: "{{stub_string}}"
+        - questions: *questions
 
       - header_component: &header
         - hero: *hero
