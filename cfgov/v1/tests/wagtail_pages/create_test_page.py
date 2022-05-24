@@ -9,19 +9,20 @@
 # exist are marked as such.
 #############################################################################
 
-# import json
-# from datetime import date
+import json
 
 from django.core.exceptions import ValidationError
 
 # from wagtail.core import blocks
 from wagtail.core.models import Site
 
+from yaml import load
+
 # from v1.atomic_elements import molecules, organisms
 from v1.models.test_page import TestPage
 
 
-# from yaml import dump, load
+# from datetime import date
 
 
 # from email.mime import audio
@@ -34,265 +35,83 @@ from v1.models.test_page import TestPage
 
 
 class TestPageData:
-    # # path constants. Change to modify where stubs look for data.
-    # STUB_IMAGE_PATH = "/"
-    # STUB_VIDEO_PATH = "/"
-    # STUB_DOCUMENT_PATH = "/"
-    # STUB_TABLE_PATH = "/"
-    # STUB_FLICKR_PATH = "/"
-    # STUB_AUDIO_PATH = "/"
-    # STUB_CHART_PATH = "/"
-    # STUB_MAP_PATH = "/"
+    page = TestPage(title="Test Page", slug="test-page")
 
-    # # set any stubs that will be used
-    # def set_stubs(
-    #     self,
-    #     image_url="/",
-    #     video_url="/",
-    #     document_url="/",
-    #     table_url="/",
-    #     flickr_url="/",
-    #     audio_url="/",
-    #     chart_url="/",
-    #     map_url="/",
-    # ):
-    #     self.STUB_IMAGE_PATH = image_url
-    #     self.STUB_VIDEO_PATH = video_url
-    #     self.STUB_DOCUMENT_PATH = document_url
-    #     self.STUB_TABLE_PATH = table_url
-    #     self.STUB_FLICKR_PATH = flickr_url
-    #     self.STUB_AUDIO_PATH = audio_url
-    #     self.STUB_CHART_PATH = chart_url
-    #     self.STUB_MAP_PATH = map_url
+    def populate_test_data(self):
+        # read yaml file into page_data object
+        stream = open("./cfgov/v1/tests/wagtail_pages/page_map.yaml", "r")
+        page = load(stream)
+        stream.close()
 
-    # # Populates provided page with test data
-    # def populate_test_data(self, page):
-    #     stub_boolean = True
-    #     # completely arbitrary and replaceable
-    #     stub_integer = 5
-    #     # completely arbitrary and replaceable
-    #     stub_float = 0.33333
-    #     stub_string = "Test text data"
-    #     stub_relative_path = "/"
-    #     stub_aria_label = "Test aria label"
-    #     stub_date = date.today()
-    #     # CFPB Address
-    #     stub_street_address = "1700 G Street NW"
-    #     stub_city = "Washington"
-    #     stub_state = "DC"
-    #     stub_zipcode = "20552"
-    #     # end address
-    #     # the following stubs expect a path to exist
-    #     stub_image = self.STUB_IMAGE_PATH
-    #     stub_video = self.STUB_VIDEO_PATH
-    #     stub_document = self.STUB_DOCUMENT_PATH
-    #     stub_table = self.STUB_TABLE_PATH
-    #     stub_flickr_url = self.STUB_FLICKR_PATH
-    #     stub_audio = self.STUB_AUDIO_PATH
-    #     stub_chart = self.STUB_CHART_PATH
-    #     stub_map = self.STUB_MAP_PATH
+        definitions = page["definitions"]
+        page_data = definitions["page"]
 
-    #     # dump page to yaml format
-    #     page_yaml = dump(page)
-
-    # replace fields with stubs based on key name
-    # resolve stubs that require a path
-    # resolve booleans
-    # resolve integers
-    # resolve float / double
-    # resolve strings that require a street address
-    # resolve strings that require a city
-    # resolve strings that require a state
-    # resolve strings that require a zipcode
-    # resolve strings that require an aria label
-    # resolve strings that require a general path
-    # resolve all other strings
-    # resolve to None if not caught
-
-    # Populate header panel
-    # page.header = json.dumps(
-    #     [
-    #         {
-    #             "hero": {
-    #                 "is_overlay": True,
-    #                 "is_bleeding": True,
-    #             },
-    #             "article_subheader": "Test subheader text",
-    #             "text_introduction": {
-    #                 "eyebrow": "Test H5 eyebrow text",
-    #                 "heading": "Test H1 heading text",
-    #                 "intro": "Test intro text",
-    #                 "body": "Test body text",
-    #                 "links": [
-    #                     {
-    #                         "text": "Reload",
-    #                         "aria_label": "Reloads current page",
-    #                         "url": "/",
-    #                     },
-    #                     {
-    #                         "text": "Reload 2",
-    #                         "aria_label": "Reloads current page",
-    #                         "url": "/",
-    #                     },
-    #                 ],
-    #                 "has_rule": True,
-    #             },
-    #             "item_introduction": {
-    #                 "show_category": True,
-    #                 "heading": "Test heading text",
-    #                 "paragraph": "Test paragraph text",
-    #                 "date": date.today(),
-    #                 "has_social": True,
-    #             },
-    #             "featured_content": {
-    #                 "heading": "Test heading text",
-    #                 "body": "Test body text",
-    #                 "post": blocks.PageChooserBlock(),
-    #                 "show_post_link": True,
-    #                 "post_link_text": "Reload",
-    #                 "image": {
-    #                     "upload": ImageChooserBlock(),
-    #                     "alt": "Test alt text",
-    #                 },
-    #                 "links": [
-    #                     {
-    #                         "text": "Reload",
-    #                         "aria_label": "Reloads current page",
-    #                         "url": "/",
-    #                     },
-    #                     {
-    #                         "text": "Reload 2",
-    #                         "aria_label": "Reloads current page",
-    #                         "url": "/",
-    #                     },
-    #                 ],
-    #                 "video": {
-    #                     "video_id": "1V0Ax9OIc84",
-    #                     "thumbnail_image": ImageChooserBlock(),
-    #                 },
-    #             },
-    #             "notification": {
-    #                 "type": "information",
-    #                 "message": "Test information message text",
-    #                 "explanation": "Test explanation text",
-    #                 "links": [
-    #                     {
-    #                         "text": "Reload",
-    #                         "aria_label": "Reloads current page",
-    #                         "url": "/",
-    #                     },
-    #                     {
-    #                         "text": "Reload 2",
-    #                         "aria_label": "Reloads current page",
-    #                         "url": "/",
-    #                     },
-    #                 ],
-    #             },
-    #             "jumbo_hero": {
-    #                 "is_50_50": True,
-    #             },
-    #             "features": {
-    #                 "format": "50-50",
-    #                 "heading": {
-    #                     "level": "h2",
-    #                     "icon": "help-round",
-    #                 },
-    #                 "intro": "Test intro text",
-    #                 "link_image_and_heading": True,
-    #                 "has_top_rule_line": True,
-    #                 "lines_between_items": True,
-    #                 "info_units": {
-    #                     "image": {
-    #                         "upload": ImageChooserBlock(),
-    #                         "alt": "Test alt text",
-    #                     },
-    #                     "heading": {
-    #                         "level": "h2",
-    #                         "icon": "help-round",
-    #                     },
-    #                     "body": "Test body text",
-    #                     "links": [
-    #                         {
-    #                             "text": "Reload",
-    #                             "aria_label": "Reloads current page",
-    #                             "url": "/",
-    #                         },
-    #                         {
-    #                             "text": "Reload 2",
-    #                             "aria_label": "Reloads current page",
-    #                             "url": "/",
-    #                         },
-    #                     ],
-    #                 },
-    #                 "sharing": {
-    #                     "shareable": True,
-    #                     "share_blurb": "Test blurb text",
-    #                 },
-    #             },
-    #         }
-    #     ]
-    # )
-
-    # # populate misc panels
-    # page.preview_title = "Test preview title text"
-    # page.preview_subheading = "Test preview subheading text"
-    # page.preview_description = "Test preview description text"
-    # page.secondary_link_url = "/"
-    # page.secondary_link_text = "Reload"
-    # page.date_filed = date.today
-    # page.comments_close_by = "John Doe"
-    # page.public_enforcement_action = "Test public enforcement action text"
-    # page.initial_filing_date = date.today
-    # page.settled_or_contested_at_filing = "Settled"
-    # page.court = "Test court text"
-
-    # # populate event page. Basically its own page within the test page.
-    # page.body = "Test body text"
-    # page.archive_body = "Test archive body text"
-    # page.live_body = "Test live body text"
-    # page.future_body = "Test future body text"
-    # page.persistent_body = json.dumps(
-    #     [
-    #         {
-    #             "content": "Test content text",
-    #             "content_with_anchor": {
-    #                 "content_block": "Test content block text",
-    #                 "anchor_link": molecules.AnchorLink(),
-    #             },
-    #             "heading": {
-    #                 "level": "h2",
-    #                 "icon": "help-round",
-    #             },
-    #             "image": {
-    #                 "upload": ImageChooserBlock(),
-    #                 "alt": "Test alt text",
-    #             },
-    #             "table_block": organisms.AtomicTableBlock(
-    #                 table_options={"renderer": "html"}
-    #             ),
-    #             "reusable_text": "Test reusable text",
-    #         }
-    #     ]
-    # )
-    # page.start_dt = models.DateTimeField("Start", date.today)
-    # page.end_dt = models.DateTimeField("End", date.today)
-    # page.future_body = "Test future body text"
-    # page.archive_image = json.dumps(
-    #     {
-    #         "upload": ImageChooserBlock(),
-    #         "alt": "Test alt text",
-    #     }
-    # )
-    # page.video_transcript = "REPLACE"  # TODO document
-    # page.speech_transcript = "REPLACE"  # TODO document
+        # self.page.header = page_data["header"]
+        self.page.preview_title = page_data["preview_title"]
+        self.page.preview_subheading = page_data["preview_subheading"]
+        self.page.preview_description = page_data["preview_description"]
+        self.page.secondary_link_url = page_data["secondary_link_url"]
+        self.page.secondary_link_text = page_data["secondary_link_text"]
+        # self.page.preview_image = page_data["preview_image"]
+        self.page.date_published = page_data["date_published"]
+        # self.page.date_filed = page_data["date_filed"]
+        # self.page.comments_close_by = page_data["comments_close_by"]
+        self.page.public_enforcement_action = page_data[
+            "public_enforcement_action"
+        ]
+        # self.page.initial_filing_date = page_data["initial_filing_date"]
+        self.page.settled_or_contested_at_filing = page_data[
+            "settled_or_contested_at_filing"
+        ]
+        self.page.court = page_data["court"]
+        self.page.body = page_data["body"]
+        self.page.archive_body = page_data["archive_body"]
+        self.page.live_body = page_data["live_body"]
+        self.page.future_body = page_data["future_body"]
+        # self.page.persistent_body = page_data["persistent_body"]
+        self.page.start_dt = page_data["start_dt"]
+        self.page.end_dt = page_data["end_dt"]
+        # self.page.archive_image = page_data["archive_image"]
+        self.page.archive_video_id = page_data["archive_video_id"]
+        self.page.live_stream_availability = page_data[
+            "live_stream_availability"
+        ]
+        self.page.live_video_id = page_data["live_video_id"]
+        # self.page.live_stream_date = page_data["live_stream_date"]
+        self.page.venue_coords = page_data["venue_coords"]
+        self.page.venue_name = page_data["venue_name"]
+        self.page.venue_street = page_data["venue_street"]
+        self.page.venue_suite = page_data["venue_suite"]
+        self.page.venue_city = page_data["venue_city"]
+        self.page.venue_state = page_data["venue_state"]
+        self.page.venue_zipcode = page_data["venue_zipcode"]
+        self.page.venue_image_type = page_data["venue_image_type"]
+        self.page.post_event_image_type = page_data["post_event_image_type"]
+        # self.page.post_event_image = page_data["post_event_image"]
+        # self.page.agenda_items = page_data["agenda_items"]
+        self.page.content = json.dumps(
+            [
+                {
+                    "type": "well",
+                    "value": page_data["content"]["well"],
+                }
+            ]
+        )
+        # self.page.content = page_data["content"]
+        # self.page.sidebar_breakout = page_data["sidebar_breakout"]
+        self.page.secondary_nav_exclude_sibling_pages = page_data[
+            "secondary_nav_exclude_sibling_pages"
+        ]
+        self.page.share_and_print = page_data["share_and_print"]
 
     # Attempts to save an publish provided page as a child of parent
     # Returns url path relative to the current site
-    def save_and_publish_test_page(page, parent, site):
+    def save_and_publish_test_page(self, parent, site):
         try:
-            parent.add_child(instance=page)
-            page.save_revision().publish()
-        except ValidationError:
+            parent.add_child(instance=self.page)
+            self.page.save_revision().publish()
+        except ValidationError as e:
+            print(e)
             return
 
         return parent.get_url(None, site)
@@ -302,13 +121,14 @@ class TestPageData:
     def create_test_page(self):
         # get the current site and gets root
         site = Site.objects.get(is_default_site=True)
-        root = site.root
-
-        # create page and add it as a child of root
-        page = TestPage()
+        root = site.root_page
 
         # populate test page with data
-        self.populate_test_data(page)
+        self.populate_test_data()
 
         # publish test page and return the route
-        return self.save_and_publish_test_page(page, root, site)
+        return self.save_and_publish_test_page(root, site)
+
+
+data = TestPageData()
+data.create_test_page()

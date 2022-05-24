@@ -322,7 +322,6 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
     )
     start_dt = models.DateTimeField("Start")
     end_dt = models.DateTimeField("End", blank=True, null=True)
-    future_body = RichTextField(blank=True)
     archive_image = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
@@ -460,7 +459,6 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
             ("email_signup", organisms.EmailSignUp()),
             ("audio_player", organisms.AudioPlayer()),
             ("filter_controls", organisms.FilterableList()),
-            ("feedback", v1_blocks.Feedback()),
             ("faq_schema", schema.FAQ(label="FAQ schema")),
             ("how_to_schema", schema.HowTo(label="HowTo schema")),
             ("raw_html_block", blocks.RawHTMLBlock(label="Raw HTML block")),
@@ -618,11 +616,11 @@ class TestPage(FilterableListMixin, CategoryFilterableMixin, CFGOVPage):
         FieldPanel("public_enforcement_action"),
         FieldPanel("initial_filing_date"),
         InlinePanel("defendant_types", label="Defendant/Respondent Type"),
-        InlinePanel("categories", label="Forum", min_num=1, max_num=2),
+        InlinePanel("categories", label="Forum", min_num=0, max_num=2),
         FieldPanel("court"),
-        InlinePanel("docket_numbers", label="Docket Number", min_num=1),
+        InlinePanel("docket_numbers", label="Docket Number", min_num=0),
         FieldPanel("settled_or_contested_at_filing"),
-        InlinePanel("statuses", label="Status", min_num=1),
+        InlinePanel("statuses", label="Status", min_num=0),
         InlinePanel("products", label="Products"),
         InlinePanel("at_risk_groups", label="At Risk Groups"),
         InlinePanel("statutes", label="Statutes/Regulations"),
